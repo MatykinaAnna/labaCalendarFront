@@ -1,0 +1,32 @@
+.button {
+    display: flex;
+    border: none;
+    box-sizing: border-box;
+    border-radius: 3px;
+    min-height: 36px;
+    font-size: 14px;
+    padding: 0px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
+    color: #333333;
+    border: 1px solid lightgray;
+
+    &:hover {
+        opacity: 0.8;
+    }
+
+    &_primary {
+        background: #3369f3;
+        color: #ffffff;
+        border: none;
+    }
+
+    &_secondary {
+        background: #ffffff;
+        color: #3369f3;
+        border: none;
+    }
+}

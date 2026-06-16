@@ -1,0 +1,41 @@
+@import '../../styles/variables';
+
+.container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &__lbl {
+        color: $color-lbl;
+        font-size: 14px;
+
+        &_strong {
+            font-weight: 600;
+        }
+    }
+
+    &__input {
+        border: none;
+        border-bottom: 1px solid$color-blue;
+        outline: none;
+        padding: 0;
+        font-size: 14px;
+    }
+
+    &__info {
+        font-size: 12px;
+
+        &_error {
+            color: red;
+        }
+
+        &_success {
+            color: lightgreen;
+        }
+
+        &_info {
+            color: lightblue;
+        }
+    }
+}

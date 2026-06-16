@@ -1,0 +1,122 @@
+@import '../../styles/variables';
+
+.dep-page {
+    width: 100%;
+    height: calc(100vh - 75px);
+    display: flex;
+    gap: 15px;
+
+    &__list-title {
+        display: flex;
+        justify-content: space-between;
+        padding-right: 38px;
+        min-height: 32px;
+        border-bottom: 1px solid $color-dirtywhite;
+        box-shadow: 0px 1px 1px -1px $color-delimitershadow;
+    }
+
+    &__label {
+        padding: 0 10px;
+        font-style: italic;
+        font-weight: 600;
+    }
+
+    &__add-btn {
+        cursor: pointer;
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    &__users-list-container {
+        min-width: 500px;
+        max-width: 500px;
+        border-right: 1px solid $color-dirtywhite;
+        box-shadow: 1px 0px 4px -3px $color-delimitershadow;
+        padding: 0 10px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    &__departments-list {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    &__departments-drop-down {
+        width: 100%;
+    }
+
+    &__add-user-btn {
+        margin-top: auto;
+        margin-bottom: 10px;
+    }
+
+    &__user-info-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    &__user-info-header {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+        border-bottom: 1px solid $color-dirtywhite;
+        box-shadow: 0px 0px 3px -3px $color-delimitershadow;
+        padding-bottom: 10px;
+    }
+
+    &__use-info-user {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    &__user-info-actions {
+        min-height: 32px;
+        min-width: 32px;
+
+        & svg {
+            cursor: pointer;
+        }
+    }
+
+    &__user-info-fullname {
+        font-size: 20px;
+        color: $color-darkgrey;
+    }
+
+    &__user-info-pers-data {
+        display: flex;
+        gap: 30px;
+    }
+
+    &__user-add-info {
+        display: flex;
+        gap: 32px;
+        height: 100%;
+    }
+
+    &__user-add-info-files {
+        min-width: 500px;
+        border-right: 1px solid $color-dirtywhite;
+        padding-right: 32px;
+    }
+
+    &__user-add-info-data {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 32px;
+
+        &__cell {
+            height: 50%;
+        }
+    }
+}

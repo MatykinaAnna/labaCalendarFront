@@ -1,0 +1,42 @@
+@import '../../styles/variables';
+
+.dialog {
+    position: fixed;
+    inset: 0;
+    background: $color-underlay;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__paper {
+        padding: 20px;
+        min-width: 300px;
+        min-height: 150px;
+        background: $color-white;
+        border-radius: 4px;
+        box-shadow: $shadow;
+    }
+
+    &__header {
+        border-bottom: 1px solid $color-dirtywhite;
+        box-shadow: 0px 1px 1px -1px $color-delimitershadow;
+        margin: 0;
+        display: flex;
+        color: $color-baseblack;
+        padding: 10px 0;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__body {
+        padding: 15px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__footer {
+        display: flex;
+        gap: 30px;
+    }
+}

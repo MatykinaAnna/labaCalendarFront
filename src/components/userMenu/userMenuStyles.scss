@@ -1,0 +1,44 @@
+@import '../../styles/variables.scss';
+
+.user-menu {
+    width: 32px;
+    height: 32px;
+    border: 1px solid $color-white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: 600;
+
+    &__underlay {
+        position: fixed;
+        inset: 0;
+        background: $color-underlay;
+    }
+
+    &__menu {
+        z-index: 9999;
+        position: absolute;
+        margin-top: 100px;
+        right: 30px;
+        background-color: $color-white;
+        color: $color-darkgrey;
+        padding: 12px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        gap: 8px;
+        width: max-content;
+        max-width: 400px;
+        box-shadow: $shadow;
+    }
+
+    &__menu-item {
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+}
