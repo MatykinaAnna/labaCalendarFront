@@ -163,7 +163,7 @@ function EventModal({ isOpen, onClose, onSave, selectedSlot }: EventModalProps) 
           {/* === БЛОК 1: ЛИЧНОЕ СОБЫТИЕ === */}
           <div style={{ borderBottom: '2px dashed #e2e8f0', paddingBottom: '15px', marginBottom: '15px' }}>
             <div style={{ fontSize: '1.1em', fontWeight: 'bold', marginBottom: '10px', color: '#2d3748' }}>
-              👤 Блок 1: Личное событие
+              Личное событие
             </div>
             
             <div style={{ marginBottom: '10px' }}>
@@ -208,7 +208,7 @@ function EventModal({ isOpen, onClose, onSave, selectedSlot }: EventModalProps) 
           {/* === БЛОК 2: СОВМЕСТНАЯ ВСТРЕЧА === */}
           <div style={{ marginBottom: '15px' }}>
             <div style={{ fontSize: '1.1em', fontWeight: 'bold', marginBottom: '10px', color: '#2d3748' }}>
-              👥 Блок 2: Совместная встреча
+              Совместная встреча
             </div>
             
             <div style={{ marginBottom: '10px' }}>
@@ -300,7 +300,7 @@ function EventModal({ isOpen, onClose, onSave, selectedSlot }: EventModalProps) 
             <button type="button" onClick={handleReset} style={{ padding: '8px 16px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#fff', cursor: 'pointer' }}>
               Отмена
             </button>
-            <button type="submit" style={{ padding: '8px 16px', borderRadius: '4px', border: 'none', backgroundColor: '#28a745', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}>
+            <button type="submit" style={{ padding: '8px 16px', borderRadius: '3px', border: 'none', backgroundColor: '#3369f3', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}>
               Сохранить
             </button>
           </div>

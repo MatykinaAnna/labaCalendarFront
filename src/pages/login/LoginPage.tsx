@@ -23,7 +23,7 @@ export const LoginPage: FC = () => {
             // } else {
             //     navigate(`/${RoutesPaths.Departments}`);
             // }
-            if(role === 'user') {
+            if(role === 'user' || role === 'admin') {
                 navigate(`/${RoutesPaths.CalendarPage}`);
             } 
         }

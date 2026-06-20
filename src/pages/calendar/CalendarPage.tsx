@@ -9,6 +9,7 @@ import { RoutesPaths, AccessTokenKey, RoleKey, UserNameKey } from '../../constan
 import EventModal from '../../components/eventModal/EventModal';
 import EditEventModal from '../../components/eventModal/EditEventModal';
 
+import { jwtDecode } from 'jwt-decode';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,17 +25,28 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+const requests: Promise<any>[] = [];
+
+interface EventParticipantDto {
+  id: number;
+  login: string;
+}
+
 // Модернизированный интерфейс события для React Big Calendar
-interface CalendarEvent {
+export interface CalendarEvent {
   id: number;
   title: string;
-  description: string | null;
-  start: Date;
-  end: Date;
+  description?: string;
+  startDate: Date;
+  endDate: Date;
   isRecurring: boolean;
-  rRule: string | null;
+  rRule?: string;
   creatorId: number;
   isOwner: boolean;
+  
+  // Добавляем новые поля с бэкенда:
+  isShared: boolean;
+  participants: EventParticipantDto[] | null; 
 }
 
 interface SelectedSlot {
@@ -56,6 +68,12 @@ export const CalendarPage: FC = () => {
   const BASE_URL_UPDATE_EVENT = 'https://localhost:7045/calendar/update';
   const BASE_URL_DELETE_EVENT = 'https://localhost:7045/calendar/delete';
 
+  interface DecodedToken {
+    [key: string]: any; 
+  }
+
+  const [userLogin, setUserLogin] = useState<string>('');
+
   // Функция загрузки и разворачивания событий
   const fetchMyEvents = async () => {
     try {
@@ -68,11 +86,32 @@ export const CalendarPage: FC = () => {
         }
       });
 
+      if (token) {
+        const decoded: DecodedToken = jwtDecode(token);
+        const login = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+        if (login) setUserLogin(login);
+      }
+
       if (response.ok) {
-        const data = await response.json();
+        const data: {
+          id: number,
+          title: string,
+          description: string,
+          startDate: string, 
+          endDate: string,
+          isRecurring: boolean,
+          rRule: string | undefined,
+          creatorId: number,
+          isOwner: boolean,
+          isShared: boolean,
+          participants: { id: number, login: string }[],
+        }[] = await response.json();
+
+        console.log(data)
+
         const expandedEvents: CalendarEvent[] = [];
 
-        data.forEach((item: any) => {
+        data.forEach((item) => {
           const originalStart = new Date(item.startDate);
           const originalEnd = new Date(item.endDate);
           // Вычисляем чистую длительность события в миллисекундах
@@ -100,12 +139,14 @@ export const CalendarPage: FC = () => {
                   id: item.id, // Общий ID для всей серии
                   title: item.title,
                   description: item.description,
-                  start: occurrenceDate,
-                  end: new Date(occurrenceDate.getTime() + duration), // Сдвигаем на длительность
+                  startDate: occurrenceDate,
+                  endDate: new Date(occurrenceDate.getTime() + duration), // Сдвигаем на длительность
                   isRecurring: true,
                   rRule: item.rRule,
                   creatorId: item.creatorId,
-                  isOwner: item.isOwner
+                  isOwner: item.isOwner,
+                  isShared: item.isShared,
+                  participants: item.participants
                 });
               });
             } catch (rruleError) {
@@ -115,12 +156,14 @@ export const CalendarPage: FC = () => {
                 id: item.id,
                 title: item.title,
                 description: item.description,
-                start: originalStart,
-                end: originalEnd,
+                startDate: originalStart,
+                endDate: originalEnd,
                 isRecurring: item.isRecurring,
                 rRule: item.rRule,
                 creatorId: item.creatorId,
-                isOwner: item.isOwner
+                isOwner: item.isOwner,
+                isShared: item.isShared,
+                participants: item.participants
               });
             }
           } else {
@@ -129,12 +172,14 @@ export const CalendarPage: FC = () => {
               id: item.id,
               title: item.title,
               description: item.description,
-              start: originalStart,
-              end: originalEnd,
+              startDate: originalStart,
+              endDate: originalEnd,
               isRecurring: false,
-              rRule: null,
+              rRule: undefined,
               creatorId: item.creatorId,
-              isOwner: item.isOwner
+              isOwner: item.isOwner,
+              isShared: item.isShared,
+              participants: item.participants
             });
           }
         });
@@ -170,8 +215,8 @@ export const CalendarPage: FC = () => {
         id: formData.id,
         title: formData.title,
         description: formData.description,
-        startDate: current ? current.start.toISOString() : new Date().toISOString(),
-        endDate: current ? current.end.toISOString() : new Date().toISOString(),
+        startDate: current ? current.startDate.toISOString() : new Date().toISOString(),
+        endDate: current ? current.endDate.toISOString() : new Date().toISOString(),
         isRecurring: current ? current.isRecurring : false,
         rRule: current ? current.rRule : null,
         participantIds: null // Бэкенд перезапишет участников только если передать массив
@@ -233,8 +278,6 @@ export const CalendarPage: FC = () => {
 
     try {
       const token = sessionStorage.getItem(AccessTokenKey);
-      const requests: Promise<any>[] = [];
-
       // 1. Формируем запрос для Личного события, если оно заполнено
       if (formData.personal) {
         const personalDto = {
@@ -315,13 +358,30 @@ const handleLogaut = () => {
 
 if (loading) return <div>Загрузка календаря...</div>;
 
+const eventStyleGetter = (event: any) => {
+  const backgroundColor = '#3369f3'
+  const style = {
+    backgroundColor: backgroundColor,
+    borderRadius: '0px',
+    opacity: 0.8,
+    color: 'white',
+    border: 'none',
+    display: 'block'
+  };
+  return {
+    style: style
+  };
+};
+
 return (
   <div style={{ height: '80vh', padding: '20px' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
       <div style={{ fontSize: '1.5em', fontWeight: 'bold', margin: 0, width: 'fit-content' }}>
         Календарь событий
       </div>
+      
       <div style={{ fontSize: '1em', fontWeight: 'bold', margin: 0, width: 'fit-content', cursor: 'pointer' }} onClick={handleLogaut}>
+        <div>{userLogin}</div>
         Выйти
       </div>
     </div>
@@ -329,8 +389,8 @@ return (
     <Calendar
       localizer={localizer}
       events={events}
-      startAccessor="start"
-      endAccessor="end"
+      startAccessor="startDate"
+      endAccessor="endDate"
       culture="ru"
       messages={{
         next: "Вперед",
@@ -341,6 +401,7 @@ return (
         day: "День",
         agenda: "Повестка дня"
       }}
+      eventPropGetter={eventStyleGetter}
       selectable={true}                
       onSelectSlot={handleSelectSlot}   
       onSelectEvent={handleSelectEvent} 

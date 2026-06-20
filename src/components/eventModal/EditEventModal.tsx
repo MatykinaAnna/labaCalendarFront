@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { CalendarEvent } from '../../pages/calendar/CalendarPage';
 
-// Интерфейс для данных события, приходящих из календаря
-interface CalendarEvent {
+
+// Структура одного участника
+interface EventParticipantDto {
   id: number;
-  title: string;
-  description: string | null;
-  start: Date;
-  end: Date;
+  login: string;
 }
 
 // Интерфейс для данных, отправляемых при редактировании
@@ -75,6 +74,7 @@ function EditEventModal({ isOpen, event, onClose, onUpdate, onDelete }: EditEven
               Название события *
             </label>
             <input 
+              disabled={!event?.isOwner} 
               type="text" 
               value={title}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
@@ -90,6 +90,7 @@ function EditEventModal({ isOpen, event, onClose, onUpdate, onDelete }: EditEven
               Описание события
             </label>
             <textarea 
+              disabled={!event?.isOwner} 
               value={description}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
               placeholder="Добавьте детали..."
@@ -98,38 +99,54 @@ function EditEventModal({ isOpen, event, onClose, onUpdate, onDelete }: EditEven
             />
           </div>
 
+          {/* Поле 3: Список участников события */}
+          {event?.isShared && event?.participants && event.participants.length > 0 && (
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', fontSize: '0.9em' }}>
+                Участники события
+              </label>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.9em', color: '#333' }}>
+                {event.participants.map((participant) => (
+                  <li key={participant.id} style={{ marginBottom: '4px' }}>
+                    {participant.login}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {/* Информационный блок с временем из пропсов */}
           <div style={{ fontSize: '0.85em', color: '#666', marginBottom: '20px', backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '4px' }}>
             <strong>Время проведения:</strong> <br />
-            {event.start.toLocaleString('ru-RU')} — {event.end.toLocaleString('ru-RU')}
+            {event.startDate.toLocaleString('ru-RU')} — {event.endDate.toLocaleString('ru-RU')}
           </div>
 
           {/* Панель кнопок с кнопкой "Удалить" */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {/* Кнопка Удалить слева */}
-            <button 
+            {event?.isOwner && (<button 
               type="button" 
               onClick={() => { if(window.confirm('Удалить это событие?')) onDelete(event.id); }}
-              style={{ padding: '8px 16px', borderRadius: '4px', border: 'none', backgroundColor: '#dc3545', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
+              style={{ padding: '8px 16px', borderRadius: '3px', border: 'none', backgroundColor: '#dc3545', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
             >
               Удалить
-            </button>
+            </button>)}
 
             {/* Кнопки Отмена и Сохранить справа */}
             <div style={{ display: 'flex', gap: '10px' }}>
               <button 
                 type="button" 
                 onClick={onClose}
-                style={{ padding: '8px 16px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#fff', cursor: 'pointer' }}
+                style={{ padding: '8px 16px', borderRadius: '3px', border: '1px solid #ccc', backgroundColor: '#fff', cursor: 'pointer' }}
               >
                 Отмена
               </button>
-              <button 
+              {event?.isOwner && (<button 
                 type="submit"
-                style={{ padding: '8px 16px', borderRadius: '4px', border: 'none', backgroundColor: '#007bff', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
+                style={{ padding: '8px 16px', borderRadius: '3px', border: 'none', backgroundColor: '#007bff', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
               >
                 Сохранить
-              </button>
+              </button>)}
             </div>
           </div>
         </form>
